@@ -1,12 +1,10 @@
-const jwt = require('jsonwebtoken');
-const { secret }= require('../config')
+import jwt  from 'jsonwebtoken';
+// import {secret} from '../config.js';
 
-const generateAccessToken = (id) => {
+export const generateAccessToken = (id) => {
     const payload = {
         id
     }
 
-    return jwt.sign(payload, secret)
+    return jwt.sign(payload, process.env.JWT_SECRET)
 }
-
-module.exports = generateAccessToken;

@@ -1,13 +1,21 @@
-const Router = require('express');
+import Router from 'express';
+import {
+        getPosts,
+        getUserPosts, 
+        createPost, 
+        updatePost,
+        likePost
+    } from '../controllers/postController.js';
+import { verifyToken } from '../middlewares/verifyToken.js';
+import { upload } from '../utils/storage.js';
+
 const router = new Router();
-const postController = require('../controllers/postController');
-const authMiddleware = require('../middlewares/authMiddleware')
 
-router.get('/', postController.getPosts);
-router.get('/:userId/posts', postController.getUserPosts);
+router.get('/', getPosts);
+router.get('/:userId/posts', getUserPosts);
 
-router.post('/create', authMiddleware, postController.createPost);
-router.put('/:postId/update', authMiddleware, postController.updatePost);
-router.put('/:postId/like', authMiddleware, postController.likePost);
+router.post('/create', verifyToken, upload.single('file'), createPost);
+router.put('/:postId/update', verifyToken, updatePost);
+router.put('/:postId/like', verifyToken, likePost);
 
-module.exports = router;
+export default router;

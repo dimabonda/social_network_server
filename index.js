@@ -1,21 +1,25 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const multer = require('multer');
-const helmet = require('helmet');
-const path = require('path');
-const dotenv = require('dotenv');
+import express from 'express';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
-const authRouter = require('./routers/authRouter');
-const postRouter = require('./routers/postRouter');
-const commentRouter = require('./routers/commentRouter')
+import authRouter from './routers/authRouter.js';
+import userRouter from './routers/userRouter.js';
+import postRouter from './routers/postRouter.js';
+import commentRouter from './routers/commentRouter.js';
+import fileRouter from './routers/fileRouter.js';
 
-const authMiddleware = require('./middlewares/authMiddleware');
-const { body } = require('express-validator');
+
+import { verifyToken } from './middlewares/verifyToken.js';
 
 /*CONFIGURATIONS*/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 dotenv.config();
 app.use(express.json());
@@ -27,30 +31,12 @@ app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
 app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, "public/assets")))
 
-
-
-/*FILE STORAGE*/
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/assets")
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname)
-    }
-})
-
-const upload = multer({storage});
-
 /*ROUTES*/
 app.use('/auth', authRouter);
-app.use('/post', postRouter);
+app.use('/user', userRouter);
+app.use('/post', verifyToken, postRouter);
 app.use('/comment', commentRouter);
-
-app.post('/uploadpost', upload.single('picture'), (req, res) => {
-    // res.json(req)
-    console.log(req.file)
-    res.json(req.body.picturePath)
-})
+app.use('/upload', fileRouter)
 
 /*MONGOOSE SETUP*/ 
 const PORT = process.env.PORT || 6001;

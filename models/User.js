@@ -1,7 +1,7 @@
-const {model, Schema} = require('mongoose');
+import {model, Schema} from 'mongoose';
 
 const UserSchema = Schema({
-    firstName: {type: String, required: true},
+    firstName: {type: String, required: true, maxlength: 5},
     lastName: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     login: {type: String, required: true, unique: true},
@@ -12,4 +12,4 @@ const UserSchema = Schema({
     posts: [{type: Schema.Types.ObjectId, ref: 'Post'}]
 })
 
-module.exports = model('User', UserSchema)
+export default model('User', UserSchema)

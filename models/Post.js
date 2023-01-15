@@ -1,4 +1,4 @@
-const {model, Schema} = require('mongoose');
+import {model, Schema} from 'mongoose';
 
 const Post = Schema({
     title: {type: String, required: true},
@@ -8,4 +8,4 @@ const Post = Schema({
     likes: [{type: Schema.Types.ObjectId, ref: 'User'}]
 }, {timestamps: true})
 
-module.exports = model('Post', Post);
+export default model('Post', Post);

@@ -1,4 +1,4 @@
-const {model, Schema} = require('mongoose');
+import {model, Schema} from 'mongoose';
 
 const Comment = Schema({
     text: {type: String, required: true},
@@ -7,4 +7,4 @@ const Comment = Schema({
     parentComment: {type: Schema.Types.ObjectId, ref: 'Comment'}
 }, {timestamps: true})
 
-module.exports = model('Comment', Comment);
+export default model('Comment', Comment);
